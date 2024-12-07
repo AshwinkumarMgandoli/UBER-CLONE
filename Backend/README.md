@@ -77,11 +77,46 @@ Authenticates a user and returns a token.
 
 ### Request Body
 
-```json
+````json
 {
   "email": "john@email.com", // Required, valid email
-  "password": "secret123" // Required, min 6 characters
+  "password": "secret123"
+
+  // Required, min 6 characters
+## Logout User
+
+`POST /users/logout`
+
+Logs out the authenticated user by invalidating the token.
+
+### Request Headers
+
+```json
+{
+  "Authorization": "Bearer jwt_token_here" // Required, valid JWT token
 }
+````
+
+Responses
+Success Response
+Code: 200 OK
+
+{
+"message": "Successfully logged out"
+}
+
+Error Response
+Code: 401 Unauthorized
+
+{
+"message": "Invalid token or token expired"
+}
+
+Security Features
+Token is invalidated on the server side
+JWT token expires in 24 hours
+}
+
 ```
 
 Validation Rules
@@ -126,3 +161,4 @@ Security Features
 Password comparison using bcrypt
 JWT token expires in 24 hours
 Password is excluded from response
+```
