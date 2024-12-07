@@ -62,3 +62,67 @@ Notes
 Email addresses must be unique in the system
 Token is required for authenticated endpoints
 Socket ID field is optional and used for real-time communication
+
+# User API Documentation
+
+## Register New User
+
+[Previous register documentation remains the same...]
+
+## Login User
+
+`POST /users/login`
+
+Authenticates a user and returns a token.
+
+### Request Body
+
+```json
+{
+  "email": "john@email.com", // Required, valid email
+  "password": "secret123" // Required, min 6 characters
+}
+```
+
+Validation Rules
+email: Required, must be valid email format
+password: Required, minimum 6 characters
+Responses
+Success Response
+Code: 200 OK
+
+{
+"token": "jwt_token_here",
+"user": {
+"\_id": "user_id",
+"fullname": {
+"firstname": "John",
+"lastname": "Doe"
+},
+"email": "john@email.com"
+}
+}
+
+Error Responses
+Code: 401 Unauthorized
+
+{
+"message": "Invalid email or password"
+}
+
+Code: 400 Bad Request
+
+{
+"errors": [
+{
+"msg": "Invalid email",
+"param": "email",
+"location": "body"
+}
+]
+}
+
+Security Features
+Password comparison using bcrypt
+JWT token expires in 24 hours
+Password is excluded from response
