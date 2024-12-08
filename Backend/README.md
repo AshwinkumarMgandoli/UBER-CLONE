@@ -162,3 +162,109 @@ Password comparison using bcrypt
 JWT token expires in 24 hours
 Password is excluded from response
 ```
+
+Captain Endpoints
+Register New Captain
+POST /captains/register
+
+Creates a new captain account and returns an authentication token.
+
+Request Body
+
+{
+"fullname": {
+"firstname": "Jane", // Required, min 3 characters
+"lastname": "Smith" // Optional, min 3 characters if provided
+},
+"email": "jane@example.com", // Required, valid email, min 5 characters, unique
+"password": "secret123", // Required, min 6 characters
+"vehicle": {
+"color": "Red", // Required, min 3 characters
+"plate": "ABC1234", // Required, min 3 characters
+"capacity": 4, // Required, minimum 1
+"vehicleType": "car" // Required, one of ["car", "motorcycle", "auto"]
+}
+}
+
+Validation Rules
+fullname.firstname: Required, minimum 3 characters
+fullname.lastname: Optional, minimum 3 characters if provided
+email: Required, valid email format, minimum 5 characters, unique
+password: Required, minimum 6 characters
+vehicle.color: Required, minimum 3 characters
+vehicle.plate: Required, minimum 3 characters
+vehicle.capacity: Required, numeric, minimum 1
+vehicle.vehicleType: Required, one of "car", "motorcycle", "auto"
+
+Responses
+
+Success
+
+Code: 201 Created
+
+Content:
+
+{
+"token": "jwt_token_here",
+"captain": {
+"\_id": "captain_id",
+"fullname": {
+"firstname": "Jane",
+"lastname": "Smith"
+},
+"email": "jane@example.com",
+"status": "inactive",
+"vehicle": {
+"color": "Red",
+"plate": "ABC1234",
+"capacity": 4,
+"vehicleType": "car"
+}
+}
+}
+
+Error
+
+Code: 400 Bad Request
+
+Content:
+
+{
+"errors": [
+{
+"msg": "Invalid vehicle type",
+"param": "vehicle.vehicleType",
+"location": "body"
+}
+]
+}
+
+Model Structure Description
+The Captain model has the following structure:
+
+fullname (object)
+firstname (string): Required, minimum 3 characters
+lastname (string): Optional, minimum 3 characters
+email (string): Required, unique, minimum 5 characters
+password (string): Required, hashed using bcrypt
+socketId (string): Optional, used for real-time communication
+status (string): Enum of ["active", "inactive"], default is "inactive"
+vehicle (object)
+color (string): Required, minimum 3 characters
+plate (string): Required, minimum 3 characters
+capacity (number): Required, minimum value of 1
+vehicleType (string): Required, one of ["car", "motorcycle", "auto"]
+location (object)
+latitude (number): Optional
+longitude (number): Optional
+
+Security Features
+Password is hashed using bcrypt (10 rounds)
+JWT token expires in 24 hours
+Password is excluded from captain object in responses
+Notes
+Email addresses must be unique in the system
+Vehicle information is required for captains
+status indicates the captain's availability
+Token is required for authenticated endpoints
+socketId is used for real-time communication
