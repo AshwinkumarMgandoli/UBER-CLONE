@@ -268,3 +268,154 @@ Vehicle information is required for captains
 status indicates the captain's availability
 Token is required for authenticated endpoints
 socketId is used for real-time communication
+
+Captain Endpoints
+Login Captain
+POST /captains/login
+
+Authenticates a captain and returns an authentication token.
+
+Request Body
+
+{
+"email": "jane@example.com", // Required, valid email
+"password": "secret123" // Required, min 6 characters
+}
+
+alidation Rules
+email: Required, must be valid email format
+password: Required, minimum 6 characters
+Responses
+Success
+
+Code: 200 OK
+
+Content:
+
+{
+"token": "jwt_token_here",
+"captain": {
+"\_id": "captain_id",
+"fullname": {
+"firstname": "Jane",
+"lastname": "Smith"
+},
+"email": "jane@example.com",
+"status": "inactive",
+"vehicle": {
+"color": "Red",
+"plate": "ABC1234",
+"capacity": 4,
+"vehicleType": "car"
+}
+}
+}
+
+Error
+
+Code: 401 Unauthorized
+
+Content:
+
+{
+"message": "Invalid email or password"
+}
+
+Code: 400 Bad Request
+
+Content:
+
+{
+"errors": [
+{
+"msg": "Invalid email",
+"param": "email",
+"location": "body"
+}
+]
+}
+
+Security Features
+Password comparison using bcrypt
+JWT token expires in 24 hours
+Password is excluded from responses
+
+Get Captain Profile
+GET /captains/profile
+
+Retrieves the authenticated captain's profile.
+
+Headers
+Authorization: Bearer jwt_token_here
+Responses
+Success
+
+Code: 200 OK
+
+Content:
+
+{
+"\_id": "captain_id",
+"fullname": {
+"firstname": "Jane",
+"lastname": "Smith"
+},
+"email": "jane@example.com",
+"status": "inactive",
+"vehicle": {
+"color": "Red",
+"plate": "ABC1234",
+"capacity": 4,
+"vehicleType": "car"
+},
+"location": {
+"latitude": 40.7128,
+"longitude": -74.0060
+}
+}
+
+Error
+
+Code: 401 Unauthorized
+
+Content:
+
+{
+"message": "Unauthorized"
+}
+
+Notes
+Must include a valid JWT token in the Authorization header.
+Token should not be expired or blacklisted.
+
+Logout Captain
+POST /captains/logout
+
+Logs out the authenticated captain by invalidating the token.
+
+Headers
+Authorization: Bearer jwt_token_here
+Responses
+Success
+
+Code: 200 OK
+
+Content:
+
+{
+"message": "Captain logged out"
+}
+
+Error
+
+Code: 401 Unauthorized
+
+Content:
+
+{
+"message": "Unauthorized"
+}
+
+Notes
+The token used for authentication will be blacklisted.
+Subsequent requests with the same token will be rejected.
